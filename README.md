@@ -1,7 +1,7 @@
 # ai-workstation
 
 Scripts I use to run ComfyUI, Ollama, and a nightly backup on a Ubuntu 24.04
-machine with an RTX 5080. Specific to that hardware in places — the launch
+machine with an RTX 5080. Specific to that hardware in places: the launch
 flags target Blackwell.
 
 For the ComfyUI workflows themselves, see
@@ -14,12 +14,13 @@ This repo is the *operations* layer underneath those.
 
 | Component | Spec |
 |---|---|
-| GPU | NVIDIA RTX 5080 (16 GB VRAM, Blackwell — sm_120) |
+| GPU | NVIDIA RTX 5080 (16 GB VRAM, Blackwell, sm_120) |
 | CPU | AMD Ryzen 9 9900X (12c / 24t) |
-| RAM | 96 GB DDR5 |
-| Storage | 3.7 TB NVMe primary, 1.8 TB NVMe secondary |
-| OS | Ubuntu 24.04 LTS, kernel 6.17 |
-| NVIDIA driver | 580.x (CUDA 13 runtime) |
+| RAM | 96 GB DDR5-6000 (2x 48 GB) |
+| Motherboard | Gigabyte X870E AORUS ELITE WIFI7 |
+| Storage | 2x 4 TB Kingston Fury Renegade NVMe (Gen4), 2 TB WD external |
+| OS | Ubuntu 24.04 LTS, kernel 7.0 |
+| NVIDIA driver | 580.178 (CUDA 13.0) |
 | PyTorch | 2.11 + cu128 |
 
 On other hardware:
@@ -57,7 +58,7 @@ COMFY_DIR=/opt/ComfyUI COMFY_PORT=8000 ./scripts/start_comfyui.sh
 ### `scripts/backup.sh`
 
 `rsync`-based nightly backup to a destination directory. Designed to run from
-cron. **Do not also redirect cron output to the log file** — the script writes
+cron. **Do not also redirect cron output to the log file**. The script writes
 to the log directly, and double-redirecting will duplicate every line (I had
 this bug for a while; fixed in this version).
 
@@ -153,7 +154,7 @@ system RAM automatically. Expect 5–15 minutes per ~5 second clip.
 Order matters.
 
 ```bash
-# 1. NVIDIA driver (Ubuntu 24.04 — Blackwell needs 570+, 580+ recommended)
+# 1. NVIDIA driver (Ubuntu 24.04: Blackwell needs 570+, 580+ recommended)
 sudo apt install nvidia-driver-580
 sudo reboot
 
@@ -201,7 +202,7 @@ Realistic disk usage with the full kit installed:
 | Other base models (SDXL, SD1.5, z-image, etc.) | ~40 GB |
 | LoRAs you collect | varies, mine is ~10 GB |
 | Ollama models (llama3.1, qwen3, vision, etc.) | ~25 GB |
-| Generated output (images, videos) | grows fast — mine is 150+ GB |
+| Generated output (images, videos) | grows fast (mine is 150+ GB) |
 
 A 2 TB drive is the realistic minimum. A 4 TB drive gives you breathing room.
 
@@ -242,11 +243,11 @@ OLLAMA_URL=http://127.0.0.1:11435/api/chat ./scripts/chat.sh
 
 ## Related repos
 
-- [comfyui-workflows](https://github.com/CastilloworksAi/comfyui-workflows) —
+- [comfyui-workflows](https://github.com/CastilloworksAi/comfyui-workflows):
   the ComfyUI workflow JSONs (Flux, SDXL, LoRA training, captioning)
-- [lora-training-guide](https://github.com/CastilloworksAi/lora-training-guide) —
+- [lora-training-guide](https://github.com/CastilloworksAi/lora-training-guide):
   end-to-end LoRA training walkthrough
-- [lora-studio](https://github.com/CastilloworksAi/lora-studio) — local
+- [lora-studio](https://github.com/CastilloworksAi/lora-studio): local
   captioning + dataset prep web app
 
 ## License
